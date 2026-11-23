@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 public class UserInterface {
     private Dealership dealership;
@@ -16,19 +17,20 @@ public class UserInterface {
         this.dealership = DealershipFileManager.getDealership();
     }
 
-    public void display() throws InterruptedException, IOException {
-        init();
-        int selectedOption;
-        printLineSlowly("Welcome to D & B car dealership!", 50);
-        do {
-            printLineSlowly("\n• loading...", 50);
-            Thread.sleep(600);
-            System.out.println("""
+    public void display()  {
+      try{
+          init();
+          int selectedOption;
+          printLineSlowly("Welcome to D & B car dealership!", 50);
+          do {
+              printLineSlowly("\n• loading...", 50);
+              Thread.sleep(600);
+              System.out.println("""
                     \n---------------------------------------
                                  ⟨ MAIN MENU ⟩
                     ---------------------------------------""");
-            Thread.sleep(400);
-            selectedOption = Console.promptForInt("""
+              Thread.sleep(400);
+              selectedOption = Console.promptForInt("""
                     [1]  Find vehicles within a price range
                     [2]  Find vehicles by make / model
                     [3]  Find vehicles by year range
@@ -44,26 +46,35 @@ public class UserInterface {
                     
                     › Select an option [0-11]: """);
 
-            switch (selectedOption) {
-                case 1 -> processGetByPriceRequest();
-                case 2 -> processGetByMakeModelRequest();
-                case 3 -> processGetByYearRequest();
-                case 4 -> processGetByColorRequest();
-                case 5 -> processGetByMileageRequest();
-                case 6 -> processGetByVehicleTypeRequest();
-                case 7 -> processGetAllVehiclesRequest();
-                case 8 -> processAddVehicleRequest();
-                case 9 -> processRemoveVehicleRequest();
-                case 10 -> processLeaseVehicle();
-                case 11 -> processBuyVehicle();
-                case 0 -> System.out.println("\nHave a good day!");
-                default -> System.out.println("\nInvalid command, please try again.");
-            }
-        } while (selectedOption != 0);
+              switch (selectedOption) {
+                  case 1 -> processGetByPriceRequest();
+                  case 2 -> processGetByMakeModelRequest();
+                  case 3 -> processGetByYearRequest();
+                  case 4 -> processGetByColorRequest();
+                  case 5 -> processGetByMileageRequest();
+                  case 6 -> processGetByVehicleTypeRequest();
+                  case 7 -> processGetAllVehiclesRequest();
+                  case 8 -> processAddVehicleRequest();
+                  case 9 -> processRemoveVehicleRequest();
+                  case 10 -> processLeaseVehicle();
+                  case 11 -> processBuyVehicle();
+                  case 0 -> System.out.println("\nHave a good day!");
+                  default -> System.out.println("\nInvalid command, please try again.");
+              }
+          } while (selectedOption != 0);
+
+
+      } catch (Exception e) {
+          System.out.println("There was a fatal error and we had to quit.");
+          System.out.println("Details: " + e.getMessage());
+      }
+
+
+
     }
 
     // Helper method – displays all vehicles from selected list
-    private void displayVehicles(ArrayList<Vehicle> selectedVehicles) {
+    private void displayVehicles(List<Vehicle> selectedVehicles) {
 
         System.out.println("""
                 \n╔═══════╦══════╦═══════════════╦════════════════╦══════════╦═══════════╦════════════╦═════════════╗
@@ -114,7 +125,7 @@ public class UserInterface {
         // user input
         String color = Console.promptForString("› Enter color: ").trim().toLowerCase();
 
-        ArrayList<Vehicle> result = dealership.getVehiclesByColor(color);
+        List<Vehicle> result = dealership.getVehiclesByColor(color);
         displayVehicles(result);
     }
 

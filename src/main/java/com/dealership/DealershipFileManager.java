@@ -16,6 +16,34 @@ public class DealershipFileManager {
 
             // split first line from file
             String line = bufferedReader.readLine();
+            dealership = getDealershipFromLine(line);
+
+            if(dealership != null){
+
+                // loop goes through every line in file
+                while ((line = bufferedReader.readLine()) != null) {
+                    // convert each line to Vehicle object
+                    Vehicle v = getVehicleFromLine(line);
+
+                    // add vehicle to dealership
+                    dealership.addVehicle(v);
+                }
+            }
+            else{
+                throw new RuntimeException("Invalid Dealership Data.");
+            }
+
+        } catch (FileNotFoundException e) {
+            System.out.println("File was not found. Please try again.");
+        } catch (IOException e) {
+            System.out.println("△ Something went wrong. Please try again.");
+        }
+        return dealership;
+    }
+
+    private static Dealership getDealershipFromLine(String line) {
+        try{
+            Dealership dealership;
             String[] parts = line.split(Pattern.quote("|"));
             String name = parts[0];
             String address = parts[1];
@@ -23,21 +51,13 @@ public class DealershipFileManager {
 
             // create Dealership
             dealership = new Dealership(name, address, phone);
-
-            // loop goes through every line in file
-            while ((line = bufferedReader.readLine()) != null) {
-                // convert each line to Vehicle object
-                Vehicle v = getVehicleFromLine(line);
-
-                // add vehicle to dealership
-                dealership.addVehicle(v);
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("File was not found. Please try again.");
-        } catch (IOException e) {
-            System.out.println("△ Something went wrong. Please try again.");
+            return dealership;
+        } catch (Exception e) {
+            System.out.println("△ Something went wrong reading values from file. Please try again.");
+            System.out.println("Error in line: " + line);
+            return null;
         }
-        return dealership;
+
     }
 
     public static Vehicle getVehicleFromLine(String line) {
@@ -59,7 +79,8 @@ public class DealershipFileManager {
             return new Vehicle(vin, year, make, model, vehicleType, color, odometer, price);
 
         } catch (Exception e) {
-            System.out.println("△ Something went wrong. Please try again.");
+            System.out.println("△ Something went wrong reading values from file. Please try again.");
+            System.out.println("Error in line: " + line);
             return null;
         }
     }
